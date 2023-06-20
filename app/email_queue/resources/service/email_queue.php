@@ -134,6 +134,9 @@
 		$debug = $_SESSION['email_queue']['debug']['boolean'];
 	}
 
+//set the email retry count limit
+	$retry_limit = $_SESSION['email_queue']['retry_limit']['numeric'];
+
 //get the messages waiting in the email queue
 	while (true) {
 
@@ -141,10 +144,12 @@
 		$sql = "select * from v_email_queue ";
 		$sql .= "where (email_status = 'waiting' or email_status = 'trying') ";
 		$sql .= "and hostname = :hostname ";
+		$sql .= "and email_retry_count < :retry_limit ";
 		$sql .= "order by domain_uuid asc ";
 		$sql .= "limit :limit ";
 		$parameters['hostname'] = $hostname;
 		$parameters['limit'] = $email_queue_limit;
+		$parameters['retry_limit'] = $retry_limit;
 		$database = new database;
 		$email_queue = $database->select($sql, $parameters, 'all');
 		unset($parameters);
