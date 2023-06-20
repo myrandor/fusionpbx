@@ -31,16 +31,6 @@ class config {
 	}
 
 	/**
-	 * Called when there are no references to a particular object
-	 * unset the variables used in the class
-	 */
-	public function __destruct() {
-		foreach ($this as $key => $value) {
-			unset($this->$key);
-		}
-	}
-
-	/**
 	 * Determine whether the config.php exists
 	 * @var string $db_type - type of database
 	 * @var string $db_name - name of the database
@@ -73,13 +63,10 @@ class config {
 	 * @var string $config_path - full path to the config.php file
 	 */
 	public function find() {
-		//set the include path
-			$conf = glob("{/usr/local/etc,/etc}/fusionpbx/config.conf", GLOB_BRACE);
-			set_include_path(parse_ini_file($conf[0])['document.root']);
-
 		//includes files
-			require_once "resources/require.php";
-		// find the file
+			require dirname(__DIR__, 2) . "/resources/require.php";
+
+		//find the file
 			if (file_exists($_SERVER["PROJECT_ROOT"]."/resources/config.php")) {
 				$this->config_path = $_SERVER["PROJECT_ROOT"]."/resources/config.php";
 			} elseif (file_exists("/etc/fusionpbx/config.php")) {
@@ -90,6 +77,7 @@ class config {
 			else {
 				$this->config_path = '';
 			}
+
 		//return the path
 			return $this->config_path;
 	}
@@ -99,7 +87,7 @@ class config {
 	 */
 	public function exists() {
 		$this->find();
-		if (strlen($this->config_path) > 0) {
+		if (!empty($this->config_path)) {
 			return true;
 		}
 		else {

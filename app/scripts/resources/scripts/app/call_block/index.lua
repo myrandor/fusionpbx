@@ -73,6 +73,11 @@
 --disable the cache
 	cached_value = nil;
 
+--domain_uuid is null then use a random uuid to prevent an error and allow domain_uuid is null SQL to still run
+	if (domain_uuid == nil) then
+		domain_uuid = '74040b66-ca70-4a80-84b5-8cb2139c07dd';
+	end
+
 --run call block one time
 	if (call_block == nil and call_block ~= 'true') then
 
@@ -231,7 +236,7 @@
 					sql = "update v_call_block ";
 					sql = sql .. "set call_block_count = :call_block_count ";
 					sql = sql .. "where call_block_uuid = :call_block_uuid ";
-					local params = {call_block_uuid = call_block_uuid, call_block_count = call_block_count + 1};
+					local params = {call_block_uuid = call_block_uuid, call_block_count = #call_block_count + 1};
 					if (debug["sql"]) then
 						freeswitch.consoleLog("notice", "[dialplan] SQL: " .. sql .. "; params:" .. json.encode(params) .. "\n");
 					end
