@@ -6584,7 +6584,12 @@
     <!-- # Periodic Inform Enable. 0 - No, 1 - Yes. Default is 0 -->
     <!-- # Number: 0, 1 -->
     <!-- # Mandatory -->
-    <P4506>0</P4506>
+    {if isset ($grandstream_tr069_periodic_inform_enable)}
+<P4506>{$grandstream_tr069_periodic_inform_enable}</P4506>
+{else}
+<P4506>0</P4506>
+{/if}
+
 
     <!-- # Periodic Inform Interval. Default is 86400. -->
     <!-- # Number -->
@@ -8597,7 +8602,7 @@
     <!-- # P1364 = 0 -->
 
     <!-- Set $fixed_keys variable below and the rest should work -->
-    <!-- detect with $template == grandstream/gxp21xx  2130=3fixed 2140=4fixed 2160=6fixed 2170=12fixed 2135=8fixed -->
+    <!-- detect with $template == grandstream/gxp21xx  2130=3fixed 2140=4fixed 2160=6fixed 2170=12fixed 2135=4fixed -->
 
 {$fixed_keys=4}
 {if $template == "grandstream/gxp2130"}{$fixed_keys=3}{/if}
@@ -8621,7 +8626,7 @@
 <P{$start_id+$pid+102}>{$keys.line.$line.device_key_label}</P{$start_id+$pid+102}>
 <P{$start_id+$pid+103}>{$keys.line.$line.device_key_value}</P{$start_id+$pid+103}>
 {else}
-{if $line <= $fixed_keys}
+{if $line <= 4 } <!-- GXP2135 needs special handling on this -->
 <P{$start_id+$pid}>0</P{$start_id+$pid}>
 <P{$start_id+$pid+1}>{$line-1}</P{$start_id+$pid+1}>
 <P{$start_id+$pid+102}></P{$start_id+$pid+102}>
