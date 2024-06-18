@@ -156,15 +156,23 @@
 				end
 			end
 
+		--get settings
+			require "resources.functions.settings";
+			settings = settings(domain_uuid);
+
 		--set the voicemail_dir
-			voicemail_dir = voicemail_dir.."/default/"..domain_name;
+			if (settings['switch'] ~= nil) then
+				if (settings['switch']['voicemail'] ~= nil) then
+					if (settings['switch']['voicemail']['dir'] ~= nil) then
+						voicemail_dir = settings['switch']['voicemail']['dir'].."/default/"..domain_name;
+					end
+				end
+			end
 			if (debug["info"]) then
 				freeswitch.consoleLog("notice", "[voicemail] voicemail_dir: " .. voicemail_dir .. "\n");
 			end
 
 		--settings
-			require "resources.functions.settings";
-			settings = settings(domain_uuid);
 			if (settings['voicemail'] ~= nil) then
 				storage_type = '';
 				if (settings['voicemail']['storage_type'] ~= nil) then
@@ -464,7 +472,7 @@
 					dbh:query(sql, params, function(row)
 						message_sum = row["message_sum"];
 					end);
-					if (vm_disk_quota and message_sum and #vm_disk_quota <= #message_sum) then
+					if (vm_disk_quota and message_sum and tonumber(vm_disk_quota) <= tonumber(message_sum)) then
 						--play message mailbox full
 							session:execute("playback", sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/voicemail/vm-mailbox_full.wav")
 						--hangup

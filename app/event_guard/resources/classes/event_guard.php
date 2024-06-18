@@ -157,8 +157,8 @@ if (!class_exists('event_guard')) {
 									$cmd = "sendevent CUSTOM\n";
 									$cmd .= "Event-Name: CUSTOM\n";
 									$cmd .= "Event-Subclass: event_guard:unblock\n";
-									$fp = event_socket_create($setting->get('switch','event_socket_ip_address'), $setting->get('switch', 'event_socket_port'), $setting->get('switch', 'event_socket_password'));
-									$switch_result = event_socket_request($fp, $cmd);
+									$esl = event_socket::create();
+									$switch_result = event_socket::command($cmd);
 
 								//set message
 									message::add($text['message-delete']);
